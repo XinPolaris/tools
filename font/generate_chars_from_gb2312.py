@@ -2,7 +2,7 @@
 # 从 GB2312.TXT 生成 chars.txt
 # 支持半角空格 + 全角空格 + ASCII 数字/字母/常用标点 + GB2312 全量汉字
 
-GB2312_MAPPING_FILE = r"D:\tools\font\mappings\GB2312.TXT"
+GB2312_MAPPING_FILE = r"C:\tools\font\mappings\GB2312.TXT"
 OUTPUT_FILE = "chars.txt"
 
 def main():
