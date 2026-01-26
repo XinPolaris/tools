@@ -1,8 +1,11 @@
+from pathlib import Path
 from fontTools.ttLib import TTFont
 
+BASE_DIR = Path(__file__).resolve().parent
+
 font_paths = [
-    r"C:\tools\font\cut\OPPOSans-S-M-0802.ttf",
-    r"C:\tools\font\cut\OPPOSans-S-M-0802.ttf",
+    BASE_DIR / "output" / "OPPOSanSB.ttf",
+    BASE_DIR / "output" / "OPPOSanSR.ttf",
 ]
 
 check_chars = [" ", "\x20", "\u3000", "甄", "饪"]

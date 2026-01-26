@@ -8,12 +8,15 @@ import os
 import subprocess
 from pathlib import Path
 
+BASE_DIR = Path(__file__).resolve().parent
+
 # 字符集文件
-CHARS_FILE = r"C:\tools\font\chars.txt"
+CHARS_FILE = BASE_DIR / "chars.txt"
 
 # 要裁剪的字体列表
 INPUT_FONTS = [
-    r"C:\tools\font\OPPOSans-S-M-0802.ttf"
+    BASE_DIR / "OPPOSanSB.ttf",
+    BASE_DIR / "OPPOSanSR.ttf",
 ]
 
 
