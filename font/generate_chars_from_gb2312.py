@@ -1,9 +1,16 @@
+import sys
+from pathlib import Path
+
+sys.stdout.reconfigure(encoding="utf-8")
+
 # generate_chars_from_gb2312.py
 # 从 GB2312.TXT 生成 chars.txt
 # 支持半角空格 + 全角空格 + ASCII 数字/字母/常用标点 + GB2312 全量汉字
 
-GB2312_MAPPING_FILE = r"C:\tools\font\mappings\GB2312.TXT"
-OUTPUT_FILE = "chars.txt"
+BASE_DIR = Path(__file__).resolve().parent
+GB2312_MAPPING_FILE = BASE_DIR / "mappings" / "GB2312.TXT"
+EXTRA_CHARS_FILE = BASE_DIR / "extra_chars.txt"
+OUTPUT_FILE = BASE_DIR / "chars.txt"
 
 def main():
     chars = []
@@ -36,6 +43,12 @@ def main():
 
     # 5. 去重（保持顺序）
     chars = list(dict.fromkeys(chars))
+
+    if EXTRA_CHARS_FILE.exists():
+        with open(EXTRA_CHARS_FILE, "r", encoding="utf-8") as f:
+            extra_chars = f.read().replace("\n", "").replace("\r", "").replace("\t", "")
+        chars.extend(extra_chars)
+        chars = list(dict.fromkeys(chars))
 
     # 6. 写入文件
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:

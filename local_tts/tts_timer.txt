@@ -1,0 +1,2 @@
+timer_schdule_back|计时器持续为您计时，时间到了我马上提醒您～
+timer_schdule_finish|叮咚，时间到啦~

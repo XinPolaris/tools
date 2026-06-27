@@ -1,0 +1,13 @@
+recipe_no_network_favorites|网络未连接，无法查看收藏的菜谱。 请先使用方太幸福家APP扫码配网吧
+recipe_favorite_did|菜谱已收藏
+recipe_network_disconnected_favorites|当前网络已断开，无法获取收藏。请检查网络状态
+recipe_prepare_ingredients|请根据食材清单准备相应食材  UE无改语音播放要求
+recipe_sent_to_app|食材清单已发送给家人，可在手机APP查看  
+recipe_stove_not_detected|右侧智能灶未开火，无法开启智能烹饪。请将锅具置于右灶后开火。
+recipe_no_network_search|网络未连接，无法搜索菜谱。请先使用方太幸福家APP扫码配网吧
+recipe_network_disconnected_search|当前网络已断开，无法搜索菜谱。请检查网络状态
+recipe_what_to_eat_today|您今天想吃什么？
+recipe_aitalk_last_step|已经是最后一步啦~
+recipe_view_stove_recipes|欢迎查看灶具菜菜谱，本菜谱可联动智能灶进行智能烹饪哦~
+recipe_smart_cooking_stoves|智能烹饪即将开始，灶具将自动控火。请将锅具置于右侧智能灶眼。
+recipe_smart_cooking_no_stoves|本菜谱可联动智能灶进行智能烹饪。未识别到已绑定的灶具，可按视频指导烹饪。

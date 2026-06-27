@@ -6,7 +6,11 @@ font_subset_batch.py
 
 import os
 import subprocess
+import sys
 from pathlib import Path
+
+sys.stdout.reconfigure(encoding="utf-8")
+sys.stderr.reconfigure(encoding="utf-8")
 
 BASE_DIR = Path(__file__).resolve().parent
 
@@ -15,8 +19,8 @@ CHARS_FILE = BASE_DIR / "chars.txt"
 
 # 要裁剪的字体列表
 INPUT_FONTS = [
-    BASE_DIR / "OPPOSanSB.ttf",
-    BASE_DIR / "OPPOSanSR.ttf",
+    BASE_DIR / "SourceHanSansSC-Bold.otf",
+    BASE_DIR / "SourceHanSansSC-Regular.otf",
 ]
 
 
@@ -42,7 +46,7 @@ def subset_font(input_font, chars):
     output_dir = input_path.parent / "output"
     output_dir.mkdir(exist_ok=True)
 
-    output_font = output_dir / input_path.name
+    output_font = output_dir / f"{input_path.stem}.ttf"
 
     cmd = [
         "pyftsubset",

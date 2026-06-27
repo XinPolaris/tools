@@ -1,0 +1,13 @@
+startup_welcome_intro|欢迎使用方太AI膳食管家烟机！开启美味烹饪之旅前，先阅读用户使用协议并完成配网吧。
+startup_user_agreement_prompt|请先阅读用户使用协议。
+startup_privacy_policy_prompt|为了给您提供更个性化的服务，请先阅读并同意如下协议
+startup_privacy_reject_confirm|网络功能、设备联动、个性化菜谱这些核心智能功能将无法使用。确定继续吗？
+startup_privacy_reject_result|好的，您后续可随时在‘设置-隐私设置’中管理权限并为设备配网。
+startup_skip_network_confirm|跳过配网将无法使用智能菜谱与远程控制功能，您确定暂不配网吗？
+startup_network_guide_qrcode|请先扫码安装方太幸福家APP，在APP内扫码配网
+startup_network_failed_retry|网络连接似乎遇到了点困难，请检查路由器或手机网络后，重新扫码配网。
+startup_network_skipped_intro|已跳过配网，您可以随时在设置中操作。现在让我带您体验AI膳食管家烟机的功能。
+startup_network_success|太好了！网络连接成功！
+startup_remote_control_auth|是否授权您当前的手机对设备进行远程控制？
+startup_remote_control_auth_skip|好的，如您后续需要使用手机远程控制设备，可以在设置里开启。接下来，请跟随我的指引快速了解AI膳食管家烟机吧。
+startup_ready_intro|好的，一切准备就绪！接下来，请跟随我的指引快速了解AI膳食管家烟机吧。
