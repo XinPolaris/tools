@@ -2,9 +2,10 @@
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent
-COMMON_CHARS_FILE = BASE_DIR / "common_8105.txt"
-EXTRA_CHARS_FILE = BASE_DIR / "extra_chars.txt"
-OUTPUT_FILE = BASE_DIR / "chars.txt"
+CHARS_DIR = BASE_DIR / "input" / "chars"
+COMMON_CHARS_FILE = CHARS_DIR / "common_8105.txt"
+EXTRA_CHARS_FILE = CHARS_DIR / "extra_chars.txt"
+OUTPUT_FILE = CHARS_DIR / "chars.txt"
 
 
 def append_unique(chars, seen, text):

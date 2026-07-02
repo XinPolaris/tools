@@ -9,8 +9,9 @@ sys.stdout.reconfigure(encoding="utf-8")
 
 BASE_DIR = Path(__file__).resolve().parent
 GB2312_MAPPING_FILE = BASE_DIR / "mappings" / "GB2312.TXT"
-EXTRA_CHARS_FILE = BASE_DIR / "extra_chars.txt"
-OUTPUT_FILE = BASE_DIR / "chars.txt"
+CHARS_DIR = BASE_DIR / "input" / "chars"
+EXTRA_CHARS_FILE = CHARS_DIR / "extra_chars.txt"
+OUTPUT_FILE = CHARS_DIR / "chars.txt"
 
 def main():
     chars = []
@@ -54,7 +55,7 @@ def main():
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
         f.write("".join(chars))
 
-    print(f"✅ chars.txt 生成完成")
+    print(f"✅ chars.txt 生成完成: {OUTPUT_FILE.resolve()}")
     print(f"📦 字符总数: {len(chars)}（GB2312 全量 + ASCII + 半/全角空格 + 标点）")
 
 

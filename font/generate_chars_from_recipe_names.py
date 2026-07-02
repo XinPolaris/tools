@@ -2,9 +2,10 @@
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent
-RECIPE_NAMES_FILE = BASE_DIR / "recipe_names.txt"
-EXTRA_CHARS_FILE = BASE_DIR / "extra_chars.txt"
-OUTPUT_FILE = BASE_DIR / "chars.txt"
+CHARS_DIR = BASE_DIR / "input" / "chars"
+RECIPE_NAMES_FILE = CHARS_DIR / "recipe_chars.txt"
+EXTRA_CHARS_FILE = CHARS_DIR / "extra_chars.txt"
+OUTPUT_FILE = CHARS_DIR / "chars.txt"
 
 
 BASE_CHARS = (

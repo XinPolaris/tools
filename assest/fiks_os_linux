@@ -1,0 +1,26 @@
+#!/bin/sh /etc/rc.common
+# Copyright (C) 2006-2011 OpenWrt.org
+
+START=51
+STOP=10
+
+USE_PROCD=1
+PROG=/usr/bin/FIKS_OS_LINUX
+
+start_service(){
+	echo  "************FIKS_OS_LINUX start***********" > /dev/console
+	
+
+	#挂载app分区 分区大小就是文件大小 可读写
+   mount -t ubifs /dev/by-name/app /mnt/app
+   #只读挂载（主应用启动脚本在主系统，无需判断是否在recovery系统，直接挂载即可）
+   #mount -o ro -t ubifs /dev/by-name/app /mnt/app
+
+
+	procd_open_instance
+	procd_set_param command $PROG -D
+	procd_close_instance
+}
+shutdown() {
+	echo shutdow
+}

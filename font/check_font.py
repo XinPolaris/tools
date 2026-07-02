@@ -1,14 +1,16 @@
 from pathlib import Path
+
 from fontTools.ttLib import TTFont
+
 
 BASE_DIR = Path(__file__).resolve().parent
 
 font_paths = [
-    Path(r"D:\tools\font\output\OPPOSanSR.ttf"),
-    Path(r"D:\tools\font\output\OPPOSanSB.ttf"),
+    BASE_DIR / "output" / "SourceHanSansSC-Bold.ttf",
+    BASE_DIR / "output" / "SourceHanSansSC-Regular.ttf",
 ]
 
-check_chars = [" ", "\x20", "\u3000","決", "甄", "焗", "饪", "內", "換", "咾", "咕", "决"]
+check_chars = [" ", "\x20", "\u3000", "決", "甄", "焗", "饪", "內", "換", "咾", "咕", "决", "糟"]
 
 for font_path in font_paths:
     print(f"\n字体：{font_path}")
