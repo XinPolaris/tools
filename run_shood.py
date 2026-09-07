@@ -17,9 +17,9 @@ init()
 REMOTE_HOST = "10.49.3.18"
 REMOTE_USER = "huangx"
 REMOTE_PASS = "1"
-REMOTE_FILE = "/home/huangx/project/04-ranghood-2/FIKS_OS_LINUX"
+REMOTE_FILE = "/home/huangx/project/04-ranghood/FIKS_OS_LINUX"
 LOCAL_FILE = r"D:\apk\FIKS_OS_LINUX"
-DEVICE_DIR = "/mnt/UDISK"
+DEVICE_DIR = "/tmp"
 PROCESS_NAME = "FIKS_OS_LINUX"
 
 

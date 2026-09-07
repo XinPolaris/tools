@@ -20,13 +20,13 @@ echo "Firmware build process start: Project number $PROJECT_NUMBER"
 echo "============================"
 
 echo "Step 1: Clean build directory (make clean)"
-"$FOTILE_MAKE" lunch_project="$PROJECT_NUMBER" lunch_compile_type=6
+"$FOTILE_MAKE" lunch_project="$PROJECT_NUMBER" lunch_compile_type=8
 
 echo "Step 2: Update project code (update code)"
 "$FOTILE_MAKE" lunch_project="$PROJECT_NUMBER" lunch_compile_type=1
 
 echo "Step 3: Build SDK firmware package (make SDK)"
-"$FOTILE_MAKE" lunch_project="$PROJECT_NUMBER" lunch_compile_type=2
+"$FOTILE_MAKE" lunch_project="$PROJECT_NUMBER" lunch_compile_type=3
 
 echo "============================"
 echo "Firmware build process completed!"
