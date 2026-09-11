@@ -1,7 +1,13 @@
+import argparse
 import wx
 import wx.lib.newevent
 import wx.adv
 import os
+from pathlib import Path
+import shutil
+import subprocess
+import sys
+import tempfile
 import uuid
 import json
 import requests
@@ -14,6 +20,16 @@ import wx.lib.newevent
 import wx.grid
 import logging
 from logging.handlers import RotatingFileHandler
+
+
+DEFAULT_TTS_CONFIG = {
+    "product_id": "279630209",
+    "product_key": "085757baadb96edbffcdc2f09ab68ab7",
+    "product_secret": "ef59258308d5691c39e07626e0e7a983",
+    "device_name": "1C:79:2D:2F:B2:98",
+    "api_reg_url": "https://auth.dui.ai/auth/device/register",
+    "api_tts_url": "https://tts.dui.ai/runtime/v2/synthesize",
+}
 
 
 def setup_logging():
@@ -166,7 +182,13 @@ class TTSWorker(Thread):
         payload_body = str.encode(json.dumps(body))
         
         try:
-            response = requests.post(url, data=payload_body, headers={'Content-Type': 'application/json'})
+            response = requests.post(
+                url,
+                data=payload_body,
+                headers={'Content-Type': 'application/json'},
+                timeout=30,
+            )
+            response.raise_for_status()
             rsp_str = json.loads(response.text)
             return rsp_str['deviceSecret']
         except Exception as e:
@@ -210,6 +232,9 @@ class TTSWorker(Thread):
         self.logger.info("tts request: %s %s", url, body)
         try:
             response = requests.post(url, data=payload_body, headers={'Content-Type': 'application/json'}, timeout=30)
+            response.raise_for_status()
+            if not response.content:
+                raise ValueError("TTS response is empty")
             
             # 创建输出目录结构：output_dir/时间/音色/
             time_dir = os.path.join(output_dir, create_time)
@@ -702,10 +727,10 @@ class TTSFrame(wx.Frame):
     def load_default_config(self):
         """加载默认配置"""
         # API配置控件
-        self.product_id = wx.TextCtrl(self, wx.ID_ANY, "279630209", style=wx.TE_READONLY)
-        self.product_key = wx.TextCtrl(self, wx.ID_ANY, "085757baadb96edbffcdc2f09ab68ab7", style=wx.TE_READONLY)
-        self.product_secret = wx.TextCtrl(self, wx.ID_ANY, "ef59258308d5691c39e07626e0e7a983", style=wx.TE_READONLY)
-        self.device_name = wx.TextCtrl(self, wx.ID_ANY, "1C:79:2D:2F:B2:98", style=wx.TE_READONLY)
+        self.product_id = wx.TextCtrl(self, wx.ID_ANY, DEFAULT_TTS_CONFIG["product_id"], style=wx.TE_READONLY)
+        self.product_key = wx.TextCtrl(self, wx.ID_ANY, DEFAULT_TTS_CONFIG["product_key"], style=wx.TE_READONLY)
+        self.product_secret = wx.TextCtrl(self, wx.ID_ANY, DEFAULT_TTS_CONFIG["product_secret"], style=wx.TE_READONLY)
+        self.device_name = wx.TextCtrl(self, wx.ID_ANY, DEFAULT_TTS_CONFIG["device_name"], style=wx.TE_READONLY)
         
         # 合成参数控件（隐藏，仅用于存储值）
         self.speed = wx.TextCtrl(self, wx.ID_ANY, "1.0", style=wx.TE_READONLY)
@@ -1298,6 +1323,119 @@ class TTSFrame(wx.Frame):
         
         self.logger.info(message)
 
+
+def validate_audio(file_path, expected_sample_rate):
+    """校验音频格式、采样率并执行完整解码。"""
+    ffprobe = shutil.which("ffprobe")
+    ffmpeg = shutil.which("ffmpeg")
+    if not ffprobe or not ffmpeg:
+        raise RuntimeError("ffprobe and ffmpeg are required for audio validation")
+
+    probe_result = subprocess.run(
+        [
+            ffprobe,
+            "-v",
+            "error",
+            "-select_streams",
+            "a:0",
+            "-show_entries",
+            "stream=codec_name,sample_rate,channels:format=duration,size",
+            "-of",
+            "json",
+            str(file_path),
+        ],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    probe_data = json.loads(probe_result.stdout)
+    if not probe_data.get("streams"):
+        raise ValueError("generated file does not contain an audio stream")
+
+    stream = probe_data["streams"][0]
+    if stream.get("codec_name") != "mp3":
+        raise ValueError(f'unexpected audio codec: {stream.get("codec_name")}')
+    if int(stream.get("sample_rate", 0)) != expected_sample_rate:
+        raise ValueError(f'unexpected sample rate: {stream.get("sample_rate")}')
+    if int(probe_data.get("format", {}).get("size", 0)) < 1024:
+        raise ValueError("generated audio file is too small")
+
+    subprocess.run(
+        [ffmpeg, "-v", "error", "-i", str(file_path), "-f", "null", "-"],
+        check=True,
+        capture_output=True,
+    )
+    return probe_data
+
+
+def run_cli():
+    """执行无界面的单文件语音合成流程。"""
+    parser = argparse.ArgumentParser(description="Generate and validate one local TTS audio file.")
+    text_group = parser.add_mutually_exclusive_group(required=True)
+    text_group.add_argument("--text", help="Text to synthesize.")
+    text_group.add_argument("--text-file", help="UTF-8 text file to synthesize.")
+    parser.add_argument("--voice", required=True, help="Voice ID, for example gdfanfp.")
+    parser.add_argument("--output", required=True, help="Destination MP3 path.")
+    parser.add_argument("--sample-rate", type=int, default=16000)
+    parser.add_argument("--speed", type=float, default=1.0)
+    parser.add_argument("--volume", type=int, default=100)
+    parser.add_argument("--overwrite", action="store_true")
+    args = parser.parse_args()
+
+    text = args.text
+    if args.text_file:
+        text = Path(args.text_file).read_text(encoding="utf-8").strip()
+    if not text:
+        parser.error("synthesis text must not be empty")
+
+    output_path = Path(args.output).resolve()
+    if output_path.suffix.lower() != ".mp3":
+        parser.error("output path must use the .mp3 extension")
+    if output_path.exists() and not args.overwrite:
+        parser.error("output file already exists; pass --overwrite to replace it")
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    params = {
+        **DEFAULT_TTS_CONFIG,
+        "audio_format": "mp3",
+        "sample_rate": str(args.sample_rate),
+        "speed": str(args.speed),
+        "volume": str(args.volume),
+    }
+    with tempfile.TemporaryDirectory(prefix="local_tts_") as temp_dir:
+        worker = TTSWorker(None, params)
+        device_secret = worker.reg_device()
+        if not device_secret:
+            raise RuntimeError("device registration failed")
+        if not worker.submit_tts(
+            "generated",
+            args.voice,
+            device_secret,
+            output_path.name,
+            text,
+            temp_dir,
+        ):
+            raise RuntimeError("TTS synthesis failed")
+
+        generated_path = Path(temp_dir) / "generated" / args.voice / output_path.name
+        probe_data = validate_audio(generated_path, args.sample_rate)
+        staging_path = output_path.with_name(f".{output_path.name}.{uuid.uuid4().hex}.tmp")
+        try:
+            shutil.copyfile(generated_path, staging_path)
+            os.replace(staging_path, output_path)
+        finally:
+            if staging_path.exists():
+                staging_path.unlink()
+
+    stream = probe_data["streams"][0]
+    audio_format = probe_data["format"]
+    print(
+        f'Generated {output_path} | codec={stream["codec_name"]} '
+        f'sample_rate={stream["sample_rate"]} channels={stream["channels"]} '
+        f'duration={float(audio_format["duration"]):.3f}s size={audio_format["size"]}B'
+    )
+
+
 class TTSApp(wx.App):
     """应用程序类"""
     def OnInit(self):
@@ -1306,8 +1444,10 @@ class TTSApp(wx.App):
         return True
 
 if __name__ == "__main__":
-    # 调用配置函数
-    setup_logging()
-
-    app = TTSApp(False)
-    app.MainLoop()
+    if len(sys.argv) > 1:
+        run_cli()
+    else:
+        # 图形界面模式沿用原有日志和启动流程
+        setup_logging()
+        app = TTSApp(False)
+        app.MainLoop()
