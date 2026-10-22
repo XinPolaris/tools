@@ -11,11 +11,12 @@ X_USER = "777777785"
 ACCESS_TOKEN = "fotile_test_2021"
 TIMEOUT = 15
 ROOT_DIR = Path(r"D:\project_linux\04-ranghood-2\project_app\linux_app_fotile\project\04_hood\res\recipe\recipe_data")
-OSS_IMAGE_180_PROCESS = "image/resize,m_fixed,h_180,w_180,limit_0/quality,q_50/rotate,0/rounded-corners,r_4/format,png"
+# 180×180 菜谱缩略图使用半径 90 的圆角，生成圆外透明的圆形 PNG。
+OSS_IMAGE_180_PROCESS = "image/resize,m_fixed,h_180,w_180,limit_0/quality,q_50/rotate,0/rounded-corners,r_90/format,png"
 OSS_IMAGE_480_PROCESS = "image/resize,m_fixed,h_480,w_480,limit_0/quality,q_50/rotate,0/rounded-corners,r_4/format,png"
 
 RECIPE_IDS = [
-    "69f07d0b1e90bb6efd6436b8"
+    "6a057607b98e092d8847babc"
 ]
 
 

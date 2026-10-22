@@ -19,7 +19,7 @@ REMOTE_USER = "huangx"
 REMOTE_PASS = "1"
 REMOTE_FILE = "/home/huangx/project/04-ranghood/FIKS_OS_LINUX"
 LOCAL_FILE = r"D:\apk\FIKS_OS_LINUX"
-DEVICE_DIR = "/tmp"
+DEVICE_DIR = "/tmp/"
 PROCESS_NAME = "FIKS_OS_LINUX"
 
 
