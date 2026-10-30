@@ -364,7 +364,7 @@ def start_stream(
         "recorder_pid=$!; "
         f"echo \"$recorder_pid\" > {shlex.quote(pid_file)}; "
         f"{shlex.quote(hexdump_path)} -v "
-        f"-e {shlex.quote('1/1 \"%02x\"')} < {shlex.quote(fifo_file)}; "
+        f"""-e {shlex.quote('1/1 "%02x"')} < {shlex.quote(fifo_file)}; """
         "encoder_status=$?; "
         'kill -INT "$recorder_pid" 2>/dev/null; '
         'wait "$recorder_pid" 2>/dev/null; '

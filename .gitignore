@@ -6,3 +6,7 @@ Desktop
 MyDocuments
 ble_state_logs/
 recordings/
+.codex/
+local_tts/logs/
+aitalk/captures/
+aitalk/recordings/
