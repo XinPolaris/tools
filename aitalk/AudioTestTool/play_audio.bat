@@ -2,12 +2,12 @@
 setlocal
 
 if "%~1"=="" (
-    set "LOCAL_FILE=%~dp0output.wav"
+    set "LOCAL_FILE=%~dp0test.wav"
 ) else (
     set "LOCAL_FILE=%~f1"
 )
 set "DEVICE_DIR=/mnt/UDISK"
-set "DEVICE_FILE=%DEVICE_DIR%/output.wav"
+set "DEVICE_FILE=%DEVICE_DIR%/test.wav"
 
 where adb >nul 2>nul
 if errorlevel 1 (
@@ -29,7 +29,7 @@ adb push "%LOCAL_FILE%" "%DEVICE_FILE%"
 if errorlevel 1 goto :failed
 
 echo Playing %DEVICE_FILE%...
-adb shell "cd %DEVICE_DIR% && aplay -D default output.wav"
+adb shell "cd %DEVICE_DIR% && aplay -D default test.wav"
 if errorlevel 1 goto :failed
 
 echo Playback completed.
